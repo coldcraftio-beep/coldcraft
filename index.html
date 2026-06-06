@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coldcraft — Cold Emails That Get Replies</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0c0c0e;
+  --border: #222226;
+  --accent: #e8ff47;
+  --accent2: #47ffe8;
+  --text: #f0f0f0;
+  --muted: #6b6b75;
+  --card: #18181c;
+}
+body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; min-height: 100vh; }
+.app { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+.badge { display: inline-block; background: var(--accent); color: #000; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; padding: 4px 12px; text-transform: uppercase; margin-bottom: 20px; }
+h1 { font-family: 'Syne', sans-serif; font-size: clamp(32px, 6vw, 58px); font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 16px; }
+h1 span { color: var(--accent); }
+.subtitle { color: var(--muted); font-size: 14px; line-height: 1.7; max-width: 500px; margin-bottom: 48px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+@media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field.full { grid-column: 1 / -1; }
+label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+input, select, textarea { background: var(--card); border: 1px solid var(--border); color: var(--text); font-family: 'DM Mono', monospace; font-size: 14px; padding: 12px 14px; outline: none; transition: border-color 0.15s; width: 100%; appearance: none; }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b75' fill='none' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer; }
+.tone-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.tone-btn { background: var(--card); border: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 12px; padding: 8px 14px; cursor: pointer; transition: all 0.15s; }
+.tone-btn:hover { border-color: var(--accent); color: var(--text); }
+.tone-btn.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 500; }
+.generate-btn { width: 100%; background: var(--accent); border: none; color: #000; font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 0.05em; padding: 18px; cursor: pointer; margin-top: 24px; transition: all 0.15s; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.generate-btn:hover:not(:disabled) { background: #f5ff6b; transform: translateY(-1px); }
+.generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.spinner { width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.3); border-top-color: #000; border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.uses-left { text-align: center; font-size: 12px; color: var(--muted); margin-top: 12px; }
+.uses-left span { color: var(--accent); }
+.output-section { margin-top: 40px; animation: fadeUp 0.4s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.output-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.output-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent2); }
+.copy-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; padding: 6px 12px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.08em; text-transform: uppercase; }
+.copy-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+.copy-btn.copied { border-color: var(--accent); color: var(--accent); }
+.output-box { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--accent2); padding: 24px; font-size: 14px; line-height: 1.8; white-space: pre-wrap; color: #e0e0e8; }
+.divider { height: 1px; background: var(--border); margin: 48px 0; }
+.paywall { background: var(--card); border: 1px solid var(--border); padding: 36px; text-align: center; }
+.paywall h3 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+.paywall p { color: var(--muted); font-size: 13px; margin-bottom: 24px; line-height: 1.7; }
+.price-row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+.price-card { border: 1px solid var(--border); padding: 20px 28px; min-width: 160px; cursor: pointer; transition: all 0.15s; position: relative; }
+.price-card:hover, .price-card.selected { border-color: var(--accent); }
+.price-card.selected::after { content: '✓'; position: absolute; top: 8px; right: 10px; color: var(--accent); font-size: 12px; }
+.price-amount { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--accent); }
+.price-period { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.save-badge { background: var(--accent); color: #000; font-size: 10px; font-weight: 700; padding: 2px 8px; margin-top: 6px; display: inline-block; }
+.stripe-btn { background: var(--accent); border: none; color: #000; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; padding: 14px 40px; cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase; transition: all 0.15s; }
+.stripe-btn:hover { background: #f5ff6b; }
+.error { background: rgba(255,80,80,0.08); border: 1px solid rgba(255,80,80,0.3); color: #ff8080; padding: 14px 16px; font-size: 13px; margin-top: 16px; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="badge">Coldcraft</div>
+  <h1>Cold emails that<br><span>actually get replies</span></h1>
+  <p class="subtitle">Stop staring at a blank screen. Generate high-converting cold emails for your freelance business in seconds.</p>
+
+  <div class="grid">
+    <div class="field">
+      <label>Your Service</label>
+      <select id="service">
+        <option>Web Development</option>
+        <option>Graphic Design</option>
+        <option>Copywriting</option>
+        <option>Video Editing</option>
+        <option>SEO / Marketing</option>
+        <option>Virtual Assistant</option>
+        <option>Social Media Management</option>
+        <option>Photography</option>
+        <option>Bookkeeping</option>
+        <option>Consulting</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Your Name</label>
+      <input type="text" id="name" placeholder="e.g. Alex">
+    </div>
+    <div class="field full">
+      <label>Target Client Type</label>
+      <input type="text" id="target" placeholder="e.g. SaaS startups with under 20 employees...">
+    </div>
+    <div class="field full">
+      <label>Their Pain Point (optional)</label>
+      <textarea id="pain" placeholder="e.g. Their website looks outdated and they're losing leads..."></textarea>
+    </div>
+    <div class="field full">
+      <label>Desired CTA (optional)</label>
+      <input type="text" id="cta" placeholder="e.g. book a 15-min call, reply with your budget...">
+    </div>
+    <div class="field full">
+      <label>Tone</label>
+      <div class="tone-group">
+        <button class="tone-btn active" onclick="setTone(this)">Professional</button>
+        <button class="tone-btn" onclick="setTone(this)">Friendly</button>
+        <button class="tone-btn" onclick="setTone(this)">Bold & Direct</button>
+        <button class="tone-btn" onclick="setTone(this)">Consultative</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="error" class="error hidden"></div>
+
+  <button class="generate-btn" id="generateBtn" onclick="generate()">
+    ⚡ Generate Cold Email
+  </button>
+  <div class="uses-left">You have <span id="usesLeft">3</span> free uses remaining</div>
+
+  <div id="outputSection" class="output-section hidden">
+    <div class="output-header">
+      <span class="output-label">Your Email</span>
+      <button class="copy-btn" id="copyBtn" onclick="copyEmail()">Copy</button>
+    </div>
+    <div class="output-box" id="outputBox"></div>
+  </div>
+
+  <div id="paywall" class="hidden">
+    <div class="divider"></div>
+    <div class="paywall">
+      <h3>You're getting results 🔥</h3>
+      <p>Unlock unlimited cold emails, tone variations, and follow-up sequences. Cancel anytime.</p>
+      <div class="price-row">
+        <div class="price-card selected" id="monthlyCard" onclick="selectPlan('monthly')">
+          <div class="price-amount">£12</div>
+          <div class="price-period">per month</div>
+        </div>
+        <div class="price-card" id="yearlyCard" onclick="selectPlan('yearly')">
+          <div class="price-amount">£79</div>
+          <div class="price-period">per year</div>
+          <div class="save-badge">Save 45%</div>
+        </div>
+      </div>
+      <button class="stripe-btn" onclick="checkout()">Unlock Now →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const MONTHLY_LINK = 'https://buy.stripe.com/60UdR97J795E9IX60Z1RC00';
+const YEARLY_LINK = 'https://buy.stripe.com/bJebJ16F3a9I1cr20n1RC01';
+const API_KEY = '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
+';
+
+let usesLeft = 3;
+let selectedTone = 'Professional';
+let selectedPlan = 'monthly';
+let emailOutput = '';
+
+function setTone(btn) {
+  document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedTone = btn.textContent;
+}
+
+function selectPlan(plan) {
+  selectedPlan = plan;
+  document.getElementById('monthlyCard').classList.toggle('selected', plan === 'monthly');
+  document.getElementById('yearlyCard').classList.toggle('selected', plan === 'yearly');
+}
+
+function checkout() {
+  window.open(selectedPlan === 'monthly' ? MONTHLY_LINK : YEARLY_LINK, '_blank');
+}
+
+function copyEmail() {
+  navigator.clipboard.writeText(emailOutput);
+  const btn = document.getElementById('copyBtn');
+  btn.textContent = 'Copied!';
+  btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+}
+
+async function generate() {
+  if (usesLeft <= 0) {
+    document.getElementById('paywall').classList.remove('hidden');
+    return;
+  }
+
+  const target = document.getElementById('target').value.trim();
+  if (!target) {
+    const err = document.getElementById('error');
+    err.textContent = 'Please enter your target client type.';
+    err.classList.remove('hidden');
+    return;
+  }
+
+  document.getElementById('error').classList.add('hidden');
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Generating...';
+
+  const service = document.getElementById('service').value;
+  const name = document.getElementById('name').value || 'the freelancer';
+  const pain = document.getElementById('pain').value || 'not specified';
+  const cta = document.getElementById('cta').value || 'book a quick call';
+
+  const prompt = `You are an expert cold email copywriter for freelancers. Write a cold email:
+Service: ${service}
+Target client: ${target}
+Pain point: ${pain}
+CTA: ${cta}
+Tone: ${selectedTone}
+Sender name: ${name}
+
+Rules:
+- Subject line first, then blank line, then body
+- Max 150 words body
+- No "I hope this email finds you well"
+- Human, not templated
+- Clear low-friction CTA
+Format: Subject: [subject]\n\n[body]`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    emailOutput = data.content.map(b => b.text || '').join('');
+    document.getElementById('outputBox').textContent = emailOutput;
+    document.getElementById('outputSection').classList.remove('hidden');
+    usesLeft--;
+    document.getElementById('usesLeft').textContent = usesLeft;
+    if (usesLeft === 0) setTimeout(() => document.getElementById('paywall').classList.remove('hidden'), 1500);
+  } catch(e) {
+    const err = document.getElementById('error');
+    err.textContent = 'Something went wrong. Please try again.';
+    err.classList.remove('hidden');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '⚡ Generate Cold Email';
+}
+</script>
+</body>
+</html>
